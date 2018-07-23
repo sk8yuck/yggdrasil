@@ -1,13 +1,15 @@
 <template lang="html">
   <div>
-    <div id="debug">{{state}}</div>
+    <div id="debug">{{hintText}}</div>
     <div id='rootButton' @touchstart="touchstart($event)"
       @touchmove="touchmove($event)"
       @touchend="touchend($event)">
     </div>
     <div id="mask" v-show="maskShow">
-      <div class='sub-button' ref='subButtons'
-        v-for='no in [1,2,3]' :id="'sub-button-'+no" :data-value="no">{{no}}</div>
+      <div class='sub-buttons'>
+        <div class='sub-button' ref='subButtons'
+          v-for='no in [1,2,3,4]' :id="'sub-button-'+no" :data-value="no">{{no}}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -17,6 +19,7 @@ export default {
   data: function(){
     return {
       state:'none',
+      hitbutton:null,
     };
   },
   methods:{
@@ -26,10 +29,10 @@ export default {
     touchmove:function(e){
       var touchX = e.changedTouches[0].clientX;
       var touchY = e.changedTouches[0].clientY;
-      var hitButton = this.getHitButton(touchX, touchY, this.$refs.subButtons);
+      this.hitButton = this.getHitButton(touchX, touchY, this.$refs.subButtons);
 
-      if(hitButton){
-        hitButton.setAttribute('style', "width:4em;height:4em;");
+      if(this.hitButton){
+        this.hitButton.setAttribute('style', "width:4em;height:4em;");
       }else{
         this.$refs.subButtons.forEach(function(button){
           button.setAttribute('style', "width:3em;height:3em;");
@@ -41,9 +44,9 @@ export default {
     touchend:function(e){
       var touchX = e.changedTouches[0].clientX;
       var touchY = e.changedTouches[0].clientY;
-      var hitButton = this.getHitButton(touchX, touchY, this.$refs.subButtons);
+      this.hitButton = this.getHitButton(touchX, touchY, this.$refs.subButtons);
 
-      this.state = hitButton?hitButton.getAttribute("data-value"):"none";
+      this.state = "end";
     },
     hitDetect:function(touchX,touchY,rect){
       return ((touchY>rect.top) && (touchY<rect.bottom)) && ((touchX>rect.left) && (touchX < rect.right))
@@ -63,6 +66,25 @@ export default {
     maskShow:function(){
       return this.state=='start'||this.state=='move';
     },
+    hintText:function(){
+      switch(this.state){
+        case "none":{
+          return "按住按钮不放!";
+        }
+        case "start":{
+          return "滑动手指!";
+        }
+        case "move":{
+          return "继续滑动!";
+        }
+        case "end":{
+          if(this.hitButton)
+            return "你选择的是'" + this.hitButton.getAttribute("data-value") + "'";
+          else
+            return "滑动被取消了，按住按钮不放!";
+        }
+      }
+    },
   },
 }
 </script>
@@ -80,6 +102,10 @@ export default {
   z-index: 500;
   border-radius: 100%;
   background-color: green;
+}
+
+.sub-buttons{
+  margin-top:20em;
 }
 
 .sub-button{

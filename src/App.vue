@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <HelloWorld/>
+    <RootButton/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import RootButton from './components/RootButton';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    RootButton,
   },
 };
 </script>
@@ -24,5 +24,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+body{
+  margin:0;
 }
 </style>

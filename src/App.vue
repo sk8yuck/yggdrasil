@@ -18,15 +18,20 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  @font-face {
+    font-family: "Vera Sans YuanTi Mono";
+    src:url("./assets/VeraSansYuanTiMono-Regular.ttf") format('truetype');
+  }
+  font-family: 'Vera Sans YuanTi Mono';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #adadad;
   margin-top: 60px;
 }
 
 body{
   margin:0;
+  background-color: #2c2c2c;
 }
 </style>

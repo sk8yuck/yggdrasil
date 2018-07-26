@@ -6,7 +6,12 @@
 </template>
 
 <script>
+import $ from 'jquery';
 import RootButton from './components/RootButton';
+
+$('body').on('touchmove',function(e){
+  e.preventDefault();
+});
 
 export default {
   name: 'App',
@@ -33,5 +38,9 @@ export default {
 body{
   margin:0;
   background-color: #2c2c2c;
+}
+
+*{
+  touch-action:none;
 }
 </style>

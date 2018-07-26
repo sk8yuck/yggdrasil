@@ -1,10 +1,9 @@
 <template lang="html">
   <div>
     <div id="debug">{{hintText}}</div>
-    <img src='../assets/root_btn.png' id='rootButton' @contextmenu.prevent @touchstart="touchstart($event)"
+    <b-img src='../assets/root_btn.png' id='rootButton' @contextmenu.prevent @touchstart="touchstart($event)"
       @touchmove="touchmove($event)"
-      @touchend="touchend($event)">
-    </img>
+      @touchend="touchend($event)"/>
     <div id="mask" v-show="maskShow" class="container-fluid">
       <div class='content row'></div>
       <div class='sub-buttons row'>
@@ -128,12 +127,12 @@ export default {
   margin:0 auto;
   text-align:center;
   z-index: 500;
-  touch-action: manipulation;
+  touch-action: none;
 }
 
 .sub-button{
   z-index:500;
-  touch-action: manipulation;
+  touch-action: none;
 }
 
 .sub-button p{

@@ -11,6 +11,9 @@ const webpack = require('webpack')
 const config = require('../config')
 const webpackConfig = require('./webpack.prod.conf')
 
+const ncp = require('ncp').ncp;
+ncp.limit = 16;
+
 const spinner = ora('building for production...')
 spinner.start()
 
@@ -37,5 +40,18 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'
     ))
+
+    if(config.build.publishPath){
+      rm(config.build.publishPath, err => {
+        if(err) throw err;
+
+        ncp(config.build.assetsRoot,config.build.publishPath,(err)=>{
+          if(err){
+            return console.error(err);
+          }
+          console.log(`Copy "${config.build.assetsRoot}" to "${config.build.publishPath}" successfully.`);
+        });
+      })
+    }
   })
 })

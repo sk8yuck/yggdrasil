@@ -51,6 +51,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: './',
+    publishPath:"D:/Work/sk8yuck.github.io/sk8yuck.github.io/yggdrasil",
 
     /**
      * Source Maps

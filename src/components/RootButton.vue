@@ -1,28 +1,19 @@
 <template lang="html">
   <div>
-    <div id="debug">{{hintText}}</div>
-    <b-img src='../assets/root_btn.png' id='rootButton' @contextmenu.prevent @touchstart="touchstart($event)"
+    <div v-if='debugHint' id="debug">{{hintText}}</div>
+    <b-img :src='icon' id='rootButton' @contextmenu.prevent @touchstart="touchstart($event)"
       @touchmove="touchmove($event)"
       @touchend="touchend($event)"/>
     <div id="mask" v-show="maskShow" class="container-fluid">
       <div class='content row'></div>
       <div class='sub-buttons row'>
-        <div class='sub-button col' data-value='首页'>
-          <b-img :src="activeBtn=='首页'?require('../assets/index_icon_active.png'):require('../assets/index_icon.png')"/>
-          <p>首页</p>
-        </div>
-        <div class='sub-button col' data-value='乐馆'>
-          <b-img :src="activeBtn=='乐馆'?require('../assets/gallery_icon_active.png'):require('../assets/gallery_icon.png')"/>
-          <p>乐馆</p>
-        </div>
-        <div class='sub-button col' data-value='乐迷广场'>
-          <b-img :src="activeBtn=='乐迷广场'?require('../assets/plaza_icon_active.png'):require('../assets/plaza_icon.png')"/>
-          <p>乐迷广场</p>
-        </div>
-        <div class='sub-button col' data-value='个人中心'>
-          <b-img :src="activeBtn=='个人中心'?require('../assets/member_icon_active.png'):require('../assets/member_icon.png')"/>
-          <p>个人中心</p>
-        </div>
+        <SubButton v-for='btn in btns'
+          :key='btn.value'
+          :name='btn.name'
+          :value='btn.value'
+          :icon='btn.icon'
+          :active-icon='btn.activeIcon'
+          :active='activeBtnValue==btn.value'/>
       </div>
     </div>
   </div>
@@ -30,14 +21,29 @@
 
 <script>
 import $ from 'jquery';
+import _ from 'lodash/core';
+import SubButton from './SubButton.vue';
 
 export default {
   data: function(){
     return {
       state:'none',
       hitButton:null,
-      activeBtn:'首页',
+      activeBtnValue:'index',
     };
+  },
+  props:{
+    btns:{
+      type:Array,
+    },
+    icon:'',
+    debugHint:{
+      type:Boolean,
+      default:false,
+    },
+  },
+  components:{
+    SubButton:SubButton,
   },
   methods:{
     touchstart:function(e){
@@ -47,7 +53,7 @@ export default {
       var touchX = e.changedTouches[0].clientX;
       var touchY = e.changedTouches[0].clientY;
       this.hitButton = this.getHitButton(touchX, touchY, $(".sub-button"));
-      this.activeBtn = $(this.hitButton).attr('data-value');
+      this.activeBtnValue = $(this.hitButton).attr('data-value');
 
       //reset
       this.resetButtonsStyles();
@@ -87,7 +93,10 @@ export default {
         $(button).find('img').width('48px').height('48px');
         $(button).find('p').css('color','#adadad');
       });
-    }
+    },
+    getActiveBtn: function(){
+      return _.find(this.btns, {'value':this.activeBtnValue});
+    },
   },
   computed:{
     maskShow:function(){
@@ -105,8 +114,8 @@ export default {
           return "继续滑动!";
         }
         case "end":{
-          if(this.hitButton)
-            return "你选择的是'" + $(this.hitButton).attr('data-value') + "'";
+          if(this.getActiveBtn())
+            return "你选择的是'" + this.getActiveBtn().name + "'";
           else
             return "滑动被取消了，按住按钮不放!";
         }
